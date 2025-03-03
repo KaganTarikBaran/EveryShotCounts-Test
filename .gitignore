@@ -1,49 +1,36 @@
-**.ini
-**.pth
-!weights/FSC147.pth
-**__pycache__
+# Ignore Python cache and compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore Virtual Environments
+venv/
+env/
+*.venv
+
+# Ignore IDE and Editor settings
+.vscode/
 .idea/
-!/data/foring00025.png
-!/data/letsea_14/annotations_few.json
-!/data/letsea_14/annotations_zero.json
-!/data/letsea_14/split.json
+
+# Ignore checkpoints 
+checkpoints/
+
+# Ignore logs and experiment tracking directories
 /logs/
 /wandb/
-*.pth
-/pretrained_models/
-*.jpg
-*.out
-*.pyth
-saved_tokens/
-saved_models/
-checkpoints/
-examplar_tokens/
-gt_density_maps/
-gt_density_maps_recreated/
-exemplar_tokens/
-predictions/
-plots/
-*/*.npz
-*.zip
-countix_density_maps/
-repcount_density_maps/
-exemplar_tokens_reencoded/
-saved_tokens_reencoded/
-saved_models_new/
-saved_models_fulldata/
-saved_models_countix/
-saved_models_randomness/
-saved_models_randomness_new/
-saved_models_randomness_lowcounts/
-saved_models_randomness_batchsize8/
-saved_models_repcountfull/
-saved_models_subset/
-saved_models_nonormalizationbycounts/
-*/*.pyth
-node_modules
-selected_videos/
-QUVARepetitionDataset.tar.gz
-QUVARepetitionDataset/
-results/
-pytorchvideo
-detectron2
+
+# Ignore datasets
+data/RepCount/*
+!data/RepCount/
+data/UCFRep/* 
+!data/UCFRep/
+
+# Ignore pretrained models
+models/pretrained_models/*
+!models/pretrained_models/
+
+# Ignore ML/DL frameworks and dependencies
+pytorchvideo/
+detectron2/
+node_modules/

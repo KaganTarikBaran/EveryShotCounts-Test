@@ -1,129 +1,74 @@
-This is the codebase for the paper "Every Shot Counts: Using Exemplars for Repetition Counting in Videos" 
+# EveryShotCounts - Testing Only Version
 
-[Saptarshi Sinha](https://sinhasaptarshi.github.io), [Alexandros Stergiou](https://alexandrosstergiou.github.io) and [Dima Damen](https://dimadamen.github.io)
+This repository is a **modified version** of the original **EveryShotCounts** repository. The original code was published as part of the paper **"Every Shot Counts: Using Exemplars for Repetition Counting in Videos"** by:
 
+- [Saptarshi Sinha](https://sinhasaptarshi.github.io)
+- [Alexandros Stergiou](https://alexandrosstergiou.github.io)
+- [Dima Damen](https://dimadamen.github.io)
 
-[Proceedings of the Asian conference on computer vision (ACCV) 2024](https://accv2024.org)
+[Published at ACCV 2024](https://accv2024.org) | Links: [[arXiv]](https://arxiv.org/abs/2403.18074) [[Original Repo]](https://github.com/sinhasaptarshi/EveryShotCounts)
 
-Links: [[arXiv]](https://arxiv.org/abs/2403.18074) [[webpage]](https://sinhasaptarshi.github.io/escounts/)
-
-![supported versions](https://img.shields.io/badge/python-3.x-brightgreen/?style=flat&logo=python&color=green)
+![Python](https://img.shields.io/badge/python-3.x-brightgreen/?style=flat&logo=python&color=green)
 ![Library](https://img.shields.io/badge/library-PyTorch-blue/?style=flat&logo=pytorch&color=informational)
 ![GitHub license](https://img.shields.io/cocoapods/l/AFNetworking)
 
-# Abstract
+## About This Version
+This repository has been **modified for testing purposes only**. Training-related functionalities have been removed. The goal of this version is to allow easy evaluation of repetition counting models without requiring additional training steps.
 
-Video repetition counting infers the number of repetitions of recurring actions or motion within a video. We propose an exemplar-based approach that discovers visual correspondence of video exemplars across repetitions within target videos. Our proposed **E**very **S**hot **Counts** (ESCounts) model is an attention-based encoder-decoder that encodes videos of varying lengths alongside exemplars from the same and different videos. In training, ESCounts regresses locations of high correspondence to the exemplars within the video. In tandem, our method learns a latent that encodes representations of general repetitive motions, which we use for exemplar-free, zero-shot inference. Extensive experiments over commonly used datasets (RepCount, Countix, and UCFRep) showcase ESCounts obtaining state-of-the-art performance across all three datasets. On RepCount, ESCounts increases the off-by-one from 0.39 to 0.56 and decreases the mean absolute error from 0.38 to 0.21. Detailed ablations further demonstrate the effectiveness of our method. 
+## Installation
+### 1️⃣ Create and activate a virtual environment
+Run the following commands to set up a virtual environment:
+```bash
+conda create -n repcount python=3.8
+conda activate repcount
+```
 
+### 2️⃣ Install dependencies
+All required dependencies are listed in `requirements.txt`. To install them, run:
+```bash
+pip install -r requirements.txt
+```
 
-<p align="center">
-<img src="./figs/landing_figure.png" width="700" height="320" />
-</p>
+### 3️⃣ Install Additional Dependencies
+Since some dependencies require special installation, install them separately:
+```bash
+python -m pip install detectron2 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cu111/torch1.10/index.html
+pip install -e git+https://github.com/facebookresearch/pytorchvideo.git@fae0d89a194a2c1ca99e59eab6eedd40bde38726#egg=pytorchvideo
+mim install mmcv-full
+```
 
+## Dataset & Pretrained Model Download
+### 📂 **Dataset**
+Place datasets in the following directories:
+- **RepCount dataset:** `data/RepCount/`
+- **UCF101 dataset:** `data/UCFRep/`
 
+Datasets can be downloaded from:
+- [RepCount dataset](https://svip-lab.github.io/dataset/RepCount_dataset.html)
+- [UCF101 dataset](https://www.crcv.ucf.edu/data/UCF101.php)
 
-# Install environment
+### 🔥 **Pretrained Model**
+Download the pretrained model and place it in the `models/pretrained_models` directory.
+- [VideoMAE pretrained encoder](https://dl.fbaipublicfiles.com/pyslowfast/masked_models/VIT_B_16x4_MAE_PT.pyth)
 
-Create a conda environment and activate it.
+## Running the Model for Testing
+Use the `test_model.py` script to evaluate the model on a given video:
 
-`conda create -n repcount python=3.8`
+```bash
+python test_model.py --dataset 'RepCount' --resource 'cpu'
+```
 
-`conda activate repcount`
+Modify the `--resource` argument to `'cuda'` if running on GPU.
 
-Install the required packages
+### Expected Output
+The script will output:
+```
+Overall MAE: X
+OBO: X
+```
 
-`pip install av==10.0.0`
-
-`pip install einops==0.3.2`
-
-`pip install numpy`
-
-`pip install opencv-python==4.8.1.78`
-
-`pip install pandas`
-
-`pip install -e git+https://github.com/facebookresearch/pytorchvideo.git@fae0d89a194a2c1ca99e59eab6eedd40bde38726#egg=pytorchvideo`
-
-`pip install tqdm==4.59.0`
-
-`pip install torch==1.10.0+cu111 torchvision==0.11.0+cu111 torchaudio==0.10.0 -f https://download.pytorch.org/whl/torch_stable.html`
-
-`pip install simplejson`
-
-`python -m pip install detectron2 -f   https://dl.fbaipublicfiles.com/detectron2/wheels/cu111/torch1.10/index.html`
-
-`pip install psutil`
-
-`pip install scikit-image`
-
-`pip install timm`
-
-`pip install -U openmim`
-
-`mim install mmcv-full`
-
-You don't need to install mmaction anymore. It is already provided in the repo as a folder.
-
-
-# Dataset Download
-
-Download the Repcount dataset from [here](https://svip-lab.github.io/dataset/RepCount_dataset.html) under `data/RepCount` 
-
-Get Countix dataset from [here](https://sites.google.com/view/repnet) and get it under `data/Countix`
-
-
-For UCF101, download the dataset from [here](https://www.crcv.ucf.edu/data/UCF101.php) and get it under `data/UCFRep`
-
-# Extract VideoMAE encodings
-
-We use a pretrained VideoMAE-v2 encoder to extract spatio-temporal tokens from videos.
-
-Download the pretrained encoder weights from [here](https://dl.fbaipublicfiles.com/pyslowfast/masked_models/VIT_B_16x4_MAE_PT.pyth) and put it in `pretrained_models/`
-
-Extract spatio-temporal tokens for each video using
-
-```python save_swin_features.py --dataset RepCount --model VideoMAE --num_gpus 1 --data_path data/RepCount```
-
-This will create a folder `saved_VideoMAEtokens_RepCount` with tokens for all videos in the train, val and test set.
-
-Next, extract spatio-temporal tokens for each exemplars using 
-
-```python save_swin_features.py --dataset RepCount --model VideoMAE --num_gpus 1 --save_exemplar_encodings True --data_path data/RepCount```
-
-Again, this will create the folder `exemplar_VideoMAEtokens_RepCount` with tokens from repetitions in each video. For each video, the shape will be `N x 3 x 8 x 14 x 14`, where N is the number of repetitions in the video.
-
-# Train ESCounts
-
-To train with ESCounts on the encoded tokens, use
-
-`python exemplar_counting_train.py --num_gpus 1 --dataset RepCount --tokens_dir saved_VideoMAEtokens_RepCount --exemplar_dir exemplar_VideoMAEtokens_RepCount --save_path saved_models_repcount --token_pool_ratio 0.4 --multishot --iterative_shots --lr 5e-5 --encodings mae --threshold 0.4`
-
-This will save checkpoints in the `save_path`. `--threshold 0.4` uses exemplars from different videos of same actions with probability of 0.4. `--token_pool_ratio 0.4` downsamples encoded spatio-temporal tokens by spatial average pooling in order to fit in memory. `--token_pool_ratio 1.0` uses no spatial average pooling. Modify this during inference appropriately.
-
-
-# Testing
-
-
-To run inference with trained checkpoint, run
-
-`python exemplar_counting_train.py --dataset RepCount --tokens_dir saved_VideoMAEtokens_RepCount --exemplar_dir exemplar_VideoMAEtokens_RepCount --trained_model xxxxx.pyth --multishot --iterative_shots --get_overlapping_segments --only_test`
-
-Replace `xxxxx.pyth` with the trained checkpoints.
-
-You can download our trained model from [here](https://drive.google.com/file/d/1cwUtgUM0XotOx5fM4v4ZU29hlKUxze48/view?usp=drive_link) 
-
-
-# Run Demo
-To run demo on any video `data/xxxx.mp4` with our trained model, use the following:
-
-`python demo.py --video_name data/xxxx.mp4 --resource 'cpu'`
-
-Change the resource accordingly. 
-The output should be like `The number of repetitions is $x$`.
-
-
-# Citation
-If you find ESCounts helpful, please consider citing our paper as 
+## Citation
+If you use this repository, please consider citing the original paper:
 
 ```
 @InProceedings{sinha2024every,
@@ -133,3 +78,6 @@ booktitle={Proceedings of the Asian conference on computer vision (ACCV)},
 year = {2024},
 }
 ```
+
+---
+This is a **testing-focused** fork of EveryShotCounts. The original repository can be found [here](https://github.com/sinhasaptarshi/EveryShotCounts).
