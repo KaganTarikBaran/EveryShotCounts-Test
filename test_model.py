@@ -178,7 +178,6 @@ def main():
         predicted_count = process_video(video_path, encoder, decoder, args)
 
         if predicted_count is not None:
-            print(f'The number of repetitions is {predicted_count}')
             predictions.append(predicted_count)
             gt_counts.append(actual_count)
             predict_mae.append(abs(predicted_count - actual_count) / (actual_count + 1e-1))
@@ -188,7 +187,7 @@ def main():
     obo = (np.abs(predictions - gt_counts) <= 1).mean()
 
     print(f'Overall MAE: {mae}') 
-    print(f'OBO: {obo}')   
+    print(f'OBO: {obo}')
 
 if __name__ == '__main__':
     main()
