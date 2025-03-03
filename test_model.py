@@ -91,7 +91,7 @@ def load_encoder(args):
     if not os.path.isfile(model_path):
         state_dict = torch.hub.load_state_dict_from_url(url, map_location=args.resource)['model_state']
     else:
-        state_dict = torch.load(model_path,  weights_only=True, map_location=args.resource)['model_state']
+        state_dict = torch.load(model_path, map_location=args.resource)['model_state']
 
     for name, param in encoder.state_dict().items():
         if 'decode' in name:
@@ -121,7 +121,7 @@ def load_decoder(args):
     if not os.path.isfile(model_path):
         gdown.download(url, model_path, quiet=False)
 
-    decoder.load_state_dict(torch.load(model_path, weights_only=True, map_location=args.resource)['model_state_dict'])
+    decoder.load_state_dict(torch.load(model_path, map_location=args.resource)['model_state_dict'])
     return decoder
 
 
