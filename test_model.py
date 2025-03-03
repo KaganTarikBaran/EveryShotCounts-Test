@@ -109,9 +109,14 @@ def load_decoder(args):
     cfg = load_config(args, path_to_config='configs/pretrain_config.yaml')
     decoder = SupervisedMAE(cfg=cfg,use_precomputed=True, token_pool_ratio=0.4, iterative_shots=True, encodings=ENCODINGS, no_exemplars=False, window_size=(4,7,7)).to(args.resource)
 
-    model_path = 'models/pretrained_models/repcount_trained.pyth'
+    model_dir = 'models/pretrained_models'
+    model_path = os.path.join(model_dir, 'repcount_trained.pyth')
 
     url = 'https://drive.google.com/uc?id=1cwUtgUM0XotOx5fM4v4ZU29hlKUxze48'
+
+    if not os.path.exists(model_dir):
+        os.makedirs(model_dir)
+
 
     if not os.path.isfile(model_path):
         gdown.download(url, model_path, quiet=False)
